@@ -5,7 +5,8 @@ const initialState = {
   productos: [],
   error: null,
   loading: false,
-  productoeliminar: null
+  productoeliminar: null,
+  productoeditar: null
 }
 
 export default function productosReducer(state = initialState, action) {
@@ -25,6 +26,7 @@ export default function productosReducer(state = initialState, action) {
     case productosActionTypes.AGREGAR_PRODUCTO_ERROR:
     case productosActionTypes.DESCARGA_PRODUCTOS_ERROR:
     case productosActionTypes.PRODUCTO_ELIMINADO_ERROR:
+    case productosActionTypes.PRODUCTO_EDITADO_ERROR:
       return {
         ...state,
         loading: false,
@@ -45,8 +47,21 @@ export default function productosReducer(state = initialState, action) {
     case productosActionTypes.PRODUCTO_ELIMINADO_EXITO:
       return {
         ...state,
-        productos: state.productos.filter(producto => producto.id !== action.payload),
+        productos: state.productos.filter(producto => producto.id !== state.productoeliminar),
         productoeliminar: null
+      }
+    case productosActionTypes.OBTENER_PRODUCTO_EDITAR:
+      return {
+        ...state,
+        productoeditar: action.payload
+      }
+    case productosActionTypes.PRODUCTO_EDITADO_EXITO:
+      return {
+        ...state,
+        productoeditar: null,
+        productos: state.productos.map(producto =>
+          producto.id === action.payload.id ? producto = action.payload : producto
+        )
       }
     default:
       return state;
